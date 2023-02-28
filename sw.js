@@ -50,6 +50,7 @@ async function networkAndCache(request) {
   try {
     const response = await fetch(request);
     await cache.put(request, response.clone());
+    console.log("Fetch Successful");
     return response;
   } catch (error) {
     const cached = await cache.match(request);
@@ -64,7 +65,7 @@ self.addEventListener("push", function (event) {
     if (data.method === "pushMessage") {
       console.log("Push notification sent");
       event.waitUntil(
-        self.registration.showNotification("Omkar Sweets Corner", {
+        self.registration.showNotification(" ", {
           body: data.message,
           icon: "path/to/icon.png",
         })
@@ -75,7 +76,13 @@ self.addEventListener("push", function (event) {
 
 // Handle background sync
 self.addEventListener("sync", (event) => {
-  if (event.tag === "event1") {
+  if (event && event.tag === "event1") {
     console.log("Sync successful!");
+    event.waitUntil(
+      self.registration.showNotification(" ", {
+        body: "Message sent successfully!",
+        icon: "path/to/icon.png",
+      })
+    );
   }
 });
